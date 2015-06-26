@@ -373,13 +373,13 @@ define(function (require, exports, module) {
                             return (opt.type === "item" && opt.title.toLowerCase().indexOf(valueLowerCase) === 0);
                         }) : null;
 
-                    if (!suggestion) {
-                        suggestion = (options && lastWord !== "") ? options.find(function (opt) {
-                            return (opt.type === "item" && opt.title.toLowerCase().indexOf(lastWord) === 0);
-                        }) : null;
-                    }
+                if (!suggestion) {
+                    suggestion = (options && lastWord !== "") ? options.find(function (opt) {
+                        return (opt.type === "item" && opt.title.toLowerCase().indexOf(lastWord) === 0);
+                    }) : null;
+                }
 
-                    var suggestionID = suggestion ? suggestion.id : this.state.id,
+                var suggestionID = suggestion ? suggestion.id : this.state.id,
                     suggestionTitle = suggestion ? suggestion.title : this.state.suggestTitle;
                
                 this.setState({
