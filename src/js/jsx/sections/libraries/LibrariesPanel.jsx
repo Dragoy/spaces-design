@@ -136,15 +136,15 @@ define(function (require, exports, module) {
                         />
                         <SplitButtonList>
                             <SplitButtonItem
-                                title={strings.TOOLTIPS.GRID_MODE}
+                                title={"CREATE LIBRARY"}
                                 className="button-plus"
                                 iconId="plus"
                                 onClick={this._handleLibraryAdd}
                                 />
                             <SplitButtonItem
-                                title={strings.TOOLTIPS.LIST_MODE}
+                                title={"DELETE LIBRARY"}
                                 className="button-plus"
-                                iconId="distribute-vertically"
+                                iconId="trash-black"
                                 onClick={this._handleLibraryRemove}
                                 />
                         </SplitButtonList>
