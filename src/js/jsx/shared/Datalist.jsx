@@ -192,14 +192,6 @@ define(function (require, exports, module) {
             }
 
             switch (event.key) {
-            case "Tab": {
-                if (!this.props.live && this.props.onKeyDown) {
-                    this.props.onKeyDown(event);
-                    event.preventDefault();
-                    return;
-                }
-                break;
-            }
             case "ArrowUp":
                 select.selectPrev();
                 event.stopPropagation();
@@ -207,6 +199,19 @@ define(function (require, exports, module) {
             case "ArrowDown":
                 select.selectNext();
                 event.stopPropagation();
+                break;
+            case "Tab":
+                if (!this.props.live && this.props.onKeyDown &&
+                        this.state.id.indexOf("filter") === 0) {
+                    this.props.onKeyDown(event);
+                    event.preventDefault();
+                    return;
+                } else {
+                    select.close(event, "apply");
+                    if (dialog && dialog.isOpen()) {
+                        dialog.toggle(event);
+                    }
+                }
                 break;
             case "Enter":
             case "Return":
@@ -243,7 +248,8 @@ define(function (require, exports, module) {
          */
         _handleSelectChange: function (id) {
             this.setState({
-                id: id
+                id: id,
+                suggestTitle: ""
             });
             
             if (this.props.live) {
@@ -357,15 +363,23 @@ define(function (require, exports, module) {
                 width += icon ? 20 * icon.length : 0; // 20 pixels is the computed width + padding of an svg icon
 
                 // Find new autofill suggestion
+                // First check if there's anything based on the whole search value
+                // Otherwise suggest based on last word typed
                 var valueLowerCase = value ? value.toLowerCase() : "",
                     lastWord = valueLowerCase.split(" ").pop(),
                     options = this._filterOptions(valueLowerCase),
 
-                    suggestion = (options && lastWord !== "") ? options.find(function (opt) {
-                            return (opt.type === "item" && opt.title.toLowerCase().indexOf(lastWord) === 0);
-                        }) : null,
+                    suggestion = (options && valueLowerCase !== "") ? options.find(function (opt) {
+                            return (opt.type === "item" && opt.title.toLowerCase().indexOf(valueLowerCase) === 0);
+                        }) : null;
 
-                    suggestionID = suggestion ? suggestion.id : this.state.id,
+                    if (!suggestion) {
+                        suggestion = (options && lastWord !== "") ? options.find(function (opt) {
+                            return (opt.type === "item" && opt.title.toLowerCase().indexOf(lastWord) === 0);
+                        }) : null;
+                    }
+
+                    var suggestionID = suggestion ? suggestion.id : this.state.id,
                     suggestionTitle = suggestion ? suggestion.title : this.state.suggestTitle;
                
                 this.setState({
